@@ -1,5 +1,12 @@
-<script>
-export default {};
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const _go = ()=>{
+  router.push("/settings")
+}
+
 </script>
 
 <template>
@@ -15,7 +22,7 @@ export default {};
         <n-button type="primary" ghost> 搜索 </n-button>
       </n-input-group>
       <div>
-        <n-button>
+        <n-button @click="_go()">
           <n-icon size="24">
             <img src="../assets/MdSettings.svg" />
           </n-icon>

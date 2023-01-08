@@ -1,30 +1,29 @@
-<script>
+<script setup>
 import { reactive } from "vue";
 import { ref } from "vue";
 import { WebsiteConfig } from "@/config/websiteConfig.js";
+import { useUserStore } from "./stores/user";
+import { useRouter } from "vue-router";
 
-export default {
-  setup() {
-    const loginForm = reactive({});
-    const loginFormRef = ref();
-    const websiteConfig = reactive(WebsiteConfig);
-    const rules = {
-      username: { required: true, message: "请输入用户名", trigger: "blur" },
-      password: { required: true, message: "请输入密码", trigger: "blur" },
-    };
-    const handleSubmit = async (formRef) => {
-      console.log(formRef);
-      formRef.validate();
-    };
-    return {
-      websiteConfig,
-      loginForm,
-      loginFormRef,
-      rules,
-      handleSubmit,
-    };
-  },
+const router = useRouter();
+const user = useUserStore();
+
+if (user.getLoginState()){
+ router.push("/") 
+}
+
+const loginForm = reactive({});
+const loginFormRef = ref();
+const websiteConfig = reactive(WebsiteConfig);
+const rules = {
+  username: { required: true, message: "请输入用户名", trigger: "blur" },
+  password: { required: true, message: "请输入密码", trigger: "blur" },
 };
+const handleSubmit = async (formRef) => {
+  console.log(formRef);
+  formRef.validate();
+};
+
 </script>
 
 <template>

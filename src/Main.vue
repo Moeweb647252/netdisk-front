@@ -2,8 +2,19 @@
 import Header from "./components/Header.vue";
 import FileManager from "./components/FileManager.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "./stores/user";
+
+const router = useRouter();
+const user = useUserStore();
+
+if (!user.getLoginState()){
+ router.push("/login") 
+}
 
 const path = ref([]);
+
+document.title = "查看文件"
 
 </script>
 
