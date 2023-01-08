@@ -6,7 +6,7 @@ import { useMessage } from "naive-ui";
 import { values } from "lodash";
 import ClipboardJS from "clipboard";
 
-const props = defineProps(["path"]);
+const props = defineProps(["path","user"]);
 
 const messager = useMessage();
 const clipboardJs = new ClipboardJS(".clipboard-btn");
@@ -33,13 +33,18 @@ clipboardJs.on("success", (e) => {
   messager.success("复制成功！");
 });
 
-const loadDirectory = async () => {
+let loadDirectory = ()=>{
+  
+};
+
+const loadUserDirectory = async () => {
   fileList.value = new Array();
   isLoadingRef.value = true;
   axios
     .get(WebsiteConfig.apis.getUserFiles, {
       params: {
         path: path.value.join("/"),
+        token: props.user.token
       },
     })
     .then((response) => {
@@ -62,6 +67,10 @@ const loadDirectory = async () => {
       messager.error("请求失败");
     });
 };
+
+if (props.user){
+  loadDirectory = loadUserDirectory;
+}
 
 const changePath = (p) => {
   path.value = p;
@@ -179,7 +188,7 @@ loadDirectory();
     <n-card title="文件管理" size="huge">
       <template #header-extra>
         <n-breadcrumb>
-          <n-breadcrumb-item></n-breadcrumb-item>
+          <n-breadcrumb-item @click="changePath([])">ROOT</n-breadcrumb-item>
           <n-breadcrumb-item
             v-for="i in [...new Array(path.length).keys()]"
             @click="changePath(path.slice(0, i + 1))"

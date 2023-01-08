@@ -27,7 +27,7 @@ document.title = "查看文件";
       <n-layout>
         <br />
         <br />
-        <FileManager :path="path" />
+        <FileManager :path="path" :user="user"/>
       </n-layout>
       <n-layout-sider> </n-layout-sider>
     </n-layout>

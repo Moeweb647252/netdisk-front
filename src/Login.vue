@@ -45,7 +45,9 @@ const handleSubmit = async (formRef) => {
               router.push("/");
             }, 2000);
           }
-          messager.error(WebsiteConfig.errors[resp.data.code].cn);
+          else {
+            messager.error(WebsiteConfig.errors[resp.data.code].cn);
+          }
         })
         .catch(() => {
           messager.error("1出错啦~");

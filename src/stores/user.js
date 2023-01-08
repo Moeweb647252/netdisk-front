@@ -33,4 +33,7 @@ export const useUserStore = defineStore("counter", {
       return state.isLoggedIn;
     },
   },
+  persist: {
+    enabled: true
+  }
 });
