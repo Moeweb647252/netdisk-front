@@ -1,12 +1,12 @@
 <script setup>
 import { reactive, ref, Transition, nextTick } from "vue";
 import axios from "axios";
-import { WebsiteConfig } from "@/config/websiteConfig.js";
+import { WebsiteConfig } from "../config/websiteConfig.js";
 import { useMessage } from "naive-ui";
 import { values } from "lodash";
 import ClipboardJS from "clipboard";
 
-const props = defineProps(['path'])
+const props = defineProps(["path"]);
 
 const messager = useMessage();
 const clipboardJs = new ClipboardJS(".clipboard-btn");
@@ -37,9 +37,11 @@ const loadDirectory = async () => {
   fileList.value = new Array();
   isLoadingRef.value = true;
   axios
-    .get(
-      WebsiteConfig.apiAddr + "file/dir/getFiles?path=/" + path.value.join("/")
-    )
+    .get(WebsiteConfig.apis.getUserFiles, {
+      params: {
+        path: path.value.join("/"),
+      },
+    })
     .then((response) => {
       if (response.data.code != 1000) {
         messager.error("出错了～");
@@ -84,8 +86,8 @@ const _values = (obj) => {
 };
 
 const _output = (obj) => {
-  console.log(obj)
-}
+  console.log(obj);
+};
 
 const handleFileContextMenu = (e, file) => {
   contextMenuDetectedFile = file;

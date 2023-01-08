@@ -1,29 +1,58 @@
 <script setup>
 import { reactive } from "vue";
 import { ref } from "vue";
-import { WebsiteConfig } from "@/config/websiteConfig.js";
+import { WebsiteConfig } from "./config/websiteConfig.js";
 import { useUserStore } from "./stores/user";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import md5 from "js-md5";
+import { useMessage } from "naive-ui";
 
 const router = useRouter();
 const user = useUserStore();
+const messager = useMessage();
 
-if (user.getLoginState()){
- router.push("/") 
+if (user.isLoggedIn) {
+  router.push("/");
 }
 
-const loginForm = reactive({});
+const loginForm = reactive({ username: "", password: "" });
 const loginFormRef = ref();
-const websiteConfig = reactive(WebsiteConfig);
+const websiteConfig = ref(WebsiteConfig);
 const rules = {
   username: { required: true, message: "请输入用户名", trigger: "blur" },
   password: { required: true, message: "请输入密码", trigger: "blur" },
 };
 const handleSubmit = async (formRef) => {
-  console.log(formRef);
-  formRef.validate();
+  formRef
+    .validate()
+    .then(() => {
+      axios
+        .get(WebsiteConfig.apis.userLogin, {
+          params: {
+            name: loginForm.username,
+            password: md5(loginForm.password),
+          },
+        })
+        .then((resp) => {
+          let code = resp.data.code;
+          if (code == 1000) {
+            user.setLoginState(true);
+            user.setToken(resp.data.data.token);
+            user.setName(resp.data.data.name);
+            messager.info("登录成功!");
+            setTimeout(() => {
+              router.push("/");
+            }, 2000);
+          }
+          messager.error(WebsiteConfig.errors[resp.data.code].cn);
+        })
+        .catch(() => {
+          messager.error("1出错啦~");
+        });
+    })
+    .catch(() => {});
 };
-
 </script>
 
 <template>

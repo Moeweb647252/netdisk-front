@@ -1,12 +1,11 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const _go = ()=>{
-  router.push("/settings")
-}
-
+const _go = () => {
+  router.push("/settings");
+};
 </script>
 
 <template>

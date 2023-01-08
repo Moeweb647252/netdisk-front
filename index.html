@@ -8,8 +8,10 @@
   </head>
   <body>
     <div id="main">
-      <router-view></router-view>
+      <n-message-provider>
+        <router-view></router-view>
+      </n-message-provider>
     </div>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="src/main.js"></script>
   </body>
 </html>

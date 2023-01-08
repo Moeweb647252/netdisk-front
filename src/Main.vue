@@ -8,14 +8,13 @@ import { useUserStore } from "./stores/user";
 const router = useRouter();
 const user = useUserStore();
 
-if (!user.getLoginState()){
- router.push("/login") 
+if (!user.isLoggedIn) {
+  router.push("/login");
 }
 
 const path = ref([]);
 
-document.title = "查看文件"
-
+document.title = "查看文件";
 </script>
 
 <template>
@@ -28,9 +27,7 @@ document.title = "查看文件"
       <n-layout>
         <br />
         <br />
-        <n-message-provider>
-          <FileManager :path="path" />
-        </n-message-provider>
+        <FileManager :path="path" />
       </n-layout>
       <n-layout-sider> </n-layout-sider>
     </n-layout>

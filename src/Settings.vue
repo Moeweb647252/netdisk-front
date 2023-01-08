@@ -1,20 +1,17 @@
 <script setup>
-import HeaderVue from './components/Header.vue';
-import { ref,reactive } from 'vue';
-import { useUserStore } from './stores/user';
-import { useRouter } from 'vue-router';
+import HeaderVue from "./components/Header.vue";
+import { ref, reactive } from "vue";
+import { useUserStore } from "./stores/user";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 const user = useUserStore();
 
-if (!user.getLoginState()){
- router.push("/login") 
+if (!user.isLoggedIn) {
+  router.push("/login");
 }
 
-user = useUserStore()
-
-document.title = "设置"
-
+document.title = "设置";
 </script>
 <template>
   <n-layout bordered>
@@ -27,9 +24,7 @@ document.title = "设置"
         <br />
         <br />
         <n-message-provider>
-          <n-card title="" size="medium">
-            
-          </n-card>
+          <n-card title="" size="medium"> </n-card>
         </n-message-provider>
       </n-layout>
       <n-layout-sider> </n-layout-sider>
