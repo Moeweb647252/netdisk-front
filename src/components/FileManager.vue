@@ -6,11 +6,14 @@ import { useMessage } from "naive-ui";
 import { values } from "lodash";
 import ClipboardJS from "clipboard";
 
-const props = defineProps(["path","user"]);
+const props = defineProps(["path", "user"]);
 
 const messager = useMessage();
 const clipboardJs = new ClipboardJS(".clipboard-btn");
-
+const pasteFiles = reactive({
+  removeSource: null,
+  list: [],
+});
 const fileList = ref([]);
 const path = ref(props.path);
 const selectedFiles = ref(null);
@@ -33,9 +36,7 @@ clipboardJs.on("success", (e) => {
   messager.success("复制成功！");
 });
 
-let loadDirectory = ()=>{
-  
-};
+let loadDirectory = () => {};
 
 const loadUserDirectory = async () => {
   fileList.value = new Array();
@@ -44,7 +45,7 @@ const loadUserDirectory = async () => {
     .get(WebsiteConfig.apis.getUserFiles, {
       params: {
         path: path.value.join("/"),
-        token: props.user.token
+        token: props.user.token,
       },
     })
     .then((response) => {
@@ -68,7 +69,7 @@ const loadUserDirectory = async () => {
     });
 };
 
-if (props.user){
+if (props.user) {
   loadDirectory = loadUserDirectory;
 }
 
@@ -165,9 +166,14 @@ const fileContextMenuOptions = () => {
   return result;
 };
 
-onMounted(()=>{
+const copyHandler = () => {
+  pasteFiles.list = selectedFiles.value;
+  selectedFiles.value = [];
+};
+
+onMounted(() => {
   loadDirectory();
-})
+});
 </script>
 <template>
   <div ref="containerRef">
@@ -254,13 +260,19 @@ onMounted(()=>{
       style="position: fixed; bottom: 50px; right: 25px; z-index: 99999"
     >
       <n-space vertical>
-        <n-button @click="" round secondary type="info" size="medium"
+        <n-button @click="copyHandler" round secondary type="info" size="medium"
           >复制</n-button
         >
         <n-button @click="" round secondary type="info" size="medium"
           >剪切</n-button
         >
-        <n-button @click="" round secondary type="info" size="medium"
+        <n-button
+          @click=""
+          round
+          secondary
+          type="info"
+          size="medium"
+          v-if="pasteFiles.list.length"
           >粘贴</n-button
         >
         <n-button

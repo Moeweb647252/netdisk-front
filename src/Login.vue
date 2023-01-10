@@ -44,8 +44,7 @@ const handleSubmit = async (formRef) => {
             setTimeout(() => {
               router.push("/");
             }, 2000);
-          }
-          else {
+          } else {
             messager.error(WebsiteConfig.errors[resp.data.code].cn);
           }
         })

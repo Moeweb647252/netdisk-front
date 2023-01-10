@@ -33,6 +33,6 @@ export const useUserStore = defineStore("user", {
     },
   },
   persist: {
-    enabled: true
-  }
+    enabled: true,
+  },
 });
