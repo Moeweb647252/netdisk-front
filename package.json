@@ -10,12 +10,12 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "ant-design-vue": "^3.2.15",
     "axios": "^1.2.2",
     "clipboard": "^2.0.11",
     "js-md5": "^0.7.3",
     "pinia": "^2.0.28",
     "pinia-plugin-persist": "^1.0.0",
+    "vicons": "^0.0.1",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },

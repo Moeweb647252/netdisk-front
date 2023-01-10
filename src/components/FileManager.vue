@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, Transition, nextTick } from "vue";
+import { reactive, ref, Transition, nextTick, onMounted } from "vue";
 import axios from "axios";
 import { WebsiteConfig } from "../config/websiteConfig.js";
 import { useMessage } from "naive-ui";
@@ -165,7 +165,9 @@ const fileContextMenuOptions = () => {
   return result;
 };
 
-loadDirectory();
+onMounted(()=>{
+  loadDirectory();
+})
 </script>
 <template>
   <div ref="containerRef">
@@ -185,7 +187,7 @@ loadDirectory();
       :on-clickoutside="handleClickOutsideFileContextMenu"
       @select="handleFileContextMenuSelect"
     />
-    <n-card title="文件管理" size="huge">
+    <n-card title="文件管理" size="huge" :bordered="false">
       <template #header-extra>
         <n-breadcrumb>
           <n-breadcrumb-item @click="changePath([])">ROOT</n-breadcrumb-item>

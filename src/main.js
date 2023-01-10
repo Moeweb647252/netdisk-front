@@ -1,7 +1,7 @@
 import { createApp } from "vue/dist/vue.esm-bundler";
 import naive from "naive-ui/es/preset";
 import Main from "./Main.vue";
-import Settings from "./Settings.vue";
+import FileManager from "./components/FileManager.vue";
 import Login from "./Login.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { createPinia } from "pinia";
@@ -11,10 +11,6 @@ const routes = [
   {
     path: "/",
     component: Main,
-  },
-  {
-    path: "/settings",
-    component: Settings,
   },
   {
     path: "/login",

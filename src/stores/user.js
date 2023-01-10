@@ -1,7 +1,6 @@
-import { getTransitionName } from "ant-design-vue/lib/_util/transition";
 import { defineStore } from "pinia";
 
-export const useUserStore = defineStore("counter", {
+export const useUserStore = defineStore("user", {
   state: () => {
     return {
       token: "",
