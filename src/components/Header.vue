@@ -20,13 +20,6 @@ const _go = () => {
         />
         <n-button type="primary" ghost> 搜索 </n-button>
       </n-input-group>
-      <div>
-        <n-button @click="_go()">
-          <n-icon size="24">
-            <img src="../assets/MdSettings.svg" />
-          </n-icon>
-        </n-button>
-      </div>
     </n-space>
   </div>
 </template>

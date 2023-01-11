@@ -49,7 +49,7 @@ const handleSubmit = async (formRef) => {
           }
         })
         .catch(() => {
-          messager.error("1出错啦~");
+          messager.error("出错啦~");
         });
     })
     .catch(() => {});

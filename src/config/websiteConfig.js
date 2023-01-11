@@ -2,12 +2,13 @@ const apiAddr = "http://127.0.0.1:8000/api/";
 export const WebsiteConfig = {
   apiAddr: apiAddr,
   apis: {
-    getUserInfo: apiAddr + "user/info",
-    setUserInfo: apiAddr + "user/setinfo",
+    userInfo: apiAddr + "user/info",
+    userSetInfo: apiAddr + "user/setinfo",
     userLogin: apiAddr + "user/login",
-    getHostFiles: apiAddr + "fs/host/files",
-    getShareFiles: apiAddr + "fs/share/files",
-    getUserFiles: apiAddr + "fs/user/files",
+    fsHostFiles: apiAddr + "fs/host/files",
+    fsShareFiles: apiAddr + "fs/share/files",
+    fsUserFiles: apiAddr + "fs/user/files",
+    fsAllPaste: apiAddr + "fs/all/paste"
   },
   errors: {
     2000: {

@@ -6,7 +6,8 @@ import { useMessage } from "naive-ui";
 import { values } from "lodash";
 import ClipboardJS from "clipboard";
 
-const props = defineProps(["path", "user"]);
+const props = defineProps(["path", "user", "type"]);
+
 
 const messager = useMessage();
 const clipboardJs = new ClipboardJS(".clipboard-btn");
@@ -22,27 +23,29 @@ const clipButtonRef = ref(null);
 const showFileContextMenuRef = ref(false);
 const isLoadingRef = ref(false);
 const clipText = ref("");
+const allowedOperations = reactive({
+  copy: true,
+  cut: true,
+  paste: true,
+  share: true,
+  download: true,
+  getLink: true,
+  getInfo: true,
+})
 
 let contextMenuDetectedFile = null;
 
 const contextMenuX = ref(0);
 const contextMenuY = ref(0);
 
-clipboardJs.on("error", (e) => {
-  messager.error("出错了～");
-});
-
-clipboardJs.on("success", (e) => {
-  messager.success("复制成功！");
-});
-
-let loadDirectory = () => {};
-
 const loadUserDirectory = async () => {
+  if (!props.user.isLoggedIn){
+    return
+  }
   fileList.value = new Array();
   isLoadingRef.value = true;
   axios
-    .get(WebsiteConfig.apis.getUserFiles, {
+    .get(WebsiteConfig.apis.fsUserFiles, {
       params: {
         path: path.value.join("/"),
         token: props.user.token,
@@ -69,9 +72,11 @@ const loadUserDirectory = async () => {
     });
 };
 
-if (props.user) {
-  loadDirectory = loadUserDirectory;
-}
+const loadDirectory = () => {
+  if (props.type == "user"){
+    loadUserDirectory();
+  }
+};
 
 const changePath = (p) => {
   path.value = p;
@@ -129,7 +134,7 @@ const enterDirectory = (file) => {
     messager.error("出错了～");
     return;
   }
-  path.value = file.path.split("/").slice(1).concat([file.name]);
+  path.value = file.path.split("/").slice(1);
   loadDirectory();
 };
 
@@ -167,11 +172,54 @@ const fileContextMenuOptions = () => {
 };
 
 const copyHandler = () => {
-  pasteFiles.list = selectedFiles.value;
+  pasteFiles.removeSource = false;
+  pasteFiles.list = [];
+  selectedFiles.value.forEach((v)=>{
+    pasteFiles.list.push(fileList.value[v]);
+  });
   selectedFiles.value = [];
 };
 
+const cutHandler = () => {
+  pasteFiles.removeSource = true;
+  selectedFiles.value.forEach((v)=>{
+    pasteFiles.list.push(fileList.value[v]);
+  });
+  selectedFiles.value = [];
+}
+
+const pasteHandler = () => {
+  const files = [];
+  values(pasteFiles.list).forEach((v)=>{
+    files.push(v.path);
+  })
+  axios.post(WebsiteConfig.apis.fsAllPaste, {
+    token: props.user.token,
+    pasteFiles: files,
+    destPath: path.value.join("/"),
+    removeSource: pasteFiles.removeSource,
+    fsType: props.type
+  }).then((resp)=>{
+    if(resp.data.code == 1000){
+      if (pasteFiles.removeSource){
+        messager.success("剪切成功!");
+      } else {
+        messager.success("复制成功!");
+      }
+    } else {
+      messager.error(WebsiteConfig.errors[resp.date.code])
+    }
+  })
+}
+
 onMounted(() => {
+  clipboardJs.on("error", (e) => {
+    messager.error("出错了～");
+  });
+
+  clipboardJs.on("success", (e) => {
+    messager.success("复制成功！");
+  });
   loadDirectory();
 });
 </script>
@@ -254,45 +302,74 @@ onMounted(() => {
       </n-checkbox-group>
     </n-card>
   </div>
-  <Transition name="slide-fade">
-    <div
-      v-if="isEmpty(selectedFiles)"
-      style="position: fixed; bottom: 50px; right: 25px; z-index: 99999"
-    >
-      <n-space vertical>
-        <n-button @click="copyHandler" round secondary type="info" size="medium"
+  <div
+    style="position: fixed; bottom: 50px; right: 25px; z-index: 99999"
+  >
+    <n-space vertical>
+        <n-button
+          @click="copyHandler"
+          round secondary
+          type="info"
+          size="medium"
+          v-if="allowedOperations.copy && isEmpty(selectedFiles)"
           >复制</n-button
         >
-        <n-button @click="" round secondary type="info" size="medium"
-          >剪切</n-button
-        >
-        <n-button
-          @click=""
-          round
-          secondary
-          type="info"
-          size="medium"
-          v-if="pasteFiles.list.length"
-          >粘贴</n-button
-        >
-        <n-button
-          @click=""
-          round
-          secondary
-          type="info"
-          size="medium"
-          v-if="!_values(selectedFiles).some((item) => fileList[item].isDir)"
-          >下载</n-button
-        >
-        <n-button @click="" round secondary type="info" size="medium"
-          >链接</n-button
-        >
-        <n-button @click="" round secondary type="info" size="medium"
-          >详情</n-button
-        >
-      </n-space>
-    </div>
-  </Transition>
+      <n-button
+        @click="cutHandler"
+        round
+        secondary
+        type="info"
+        size="medium"
+        v-if="allowedOperations.cut && isEmpty(selectedFiles)"
+        >剪切</n-button
+      >
+      <n-button
+        @click="pasteHandler"
+        round
+        secondary
+        type="info"
+        size="medium"
+        v-if="allowedOperations.paste && pasteFiles.list.length"
+        >粘贴</n-button
+      >
+      <n-button
+        @click=""
+        round
+        secondary
+        type="info"
+        size="medium"
+        v-if="allowedOperations.download && _values(selectedFiles).length && !_values(selectedFiles).some((item) => fileList[item].isDir)"
+        >下载</n-button
+      >
+      <n-button
+        @click=""
+        round
+        secondary
+        type="info"
+        size="medium"
+        v-if="allowedOperations.getLink && _values(selectedFiles).length == 1"
+        >链接</n-button
+      >
+      <n-button
+        @click=""
+        round
+        secondary
+        type="info"
+        size="medium"
+        v-if="allowedOperations.share && _values(selectedFiles).length"
+        >分享</n-button
+      >
+      <n-button
+        @click=""
+        round
+        secondary
+        type="info"
+        size="medium"
+        v-if="allowedOperations.getInfo && _values(selectedFiles).length == 1"
+        >详情</n-button
+      >
+    </n-space>
+  </div>
 </template>
 
 <style>
