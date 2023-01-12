@@ -370,6 +370,28 @@ onMounted(() => {
       >
     </n-space>
   </div>
+  <n-modal v-model:show="showPasteModal">
+    <n-card
+      style="width: 600px"
+      title="粘贴"
+      :bordered="false"
+      size="huge"
+      role="dialog"
+      aria-modal="true"
+    >
+      <template #header-extra>
+        
+      </template>
+      <n-list>
+        <n-list-item v-for="i in repeatPasteFiles">
+          {{  i.name  }}
+        </n-list-item>
+      </n-list>
+      <template #footer>
+        
+      </template>
+    </n-card>
+  </n-modal>
 </template>
 
 <style>
