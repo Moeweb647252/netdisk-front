@@ -382,9 +382,48 @@ onMounted(() => {
       <template #header-extra>
         
       </template>
+      <!-- list duplicate paste file -->
       <n-list>
         <n-list-item v-for="i in repeatPasteFiles">
-          {{  i.name  }}
+          <!-- file info and operation -->
+          <n-space>
+            <n-icon
+              v-if="i.isDir"
+              :icon="faFolder"
+              :size="24"
+              :color="themeRef.value.primaryColor"
+            ></n-icon>
+            <n-icon
+              v-else
+              :icon="faFile"
+              :size="24"
+              :color="themeRef.value.primaryColor"
+            ></n-icon>
+            <n-ellipsis style="max-width: 240px">
+              {{ i.name }}
+            </n-ellipsis>
+          </n-space>
+          <n-space>
+            <n-button
+              @click="replaceFile(i)"
+              round
+              secondary
+              type="info"
+              size="medium"
+            >
+              替换
+            </n-button>
+            <n-button
+              @click="renameFile(i)"
+              round
+              secondary
+              type="info"
+              size="medium"
+            >
+              重命名
+            </n-button>
+          </n-space>
+          
         </n-list-item>
       </n-list>
       <template #footer>
