@@ -5,7 +5,8 @@ export const useUserStore = defineStore("user", {
     return {
       token: "",
       name: "",
-      isLoggedIn: false,
+      is_logged_In: false,
+      fs_id: null,
     };
   },
   // 也可以这样定义
@@ -18,7 +19,10 @@ export const useUserStore = defineStore("user", {
       this.name = name;
     },
     setLoginState(state) {
-      this.isLoggedIn = state;
+      this.is_logged_In = state;
+    },
+    setFsId(id) {
+      this.fs_id = id;
     },
   },
   getters: {
@@ -29,7 +33,10 @@ export const useUserStore = defineStore("user", {
       return state.name;
     },
     getLoginState(state) {
-      return state.isLoggedIn;
+      return state.is_logged_In;
+    },
+    getFsId(state) {
+      return state.fs_id;
     },
   },
   persist: {

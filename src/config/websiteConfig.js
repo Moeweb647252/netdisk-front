@@ -2,14 +2,20 @@ const apiAddr = "http://127.0.0.1:8000/api/";
 export const WebsiteConfig = {
   apiAddr: apiAddr,
   apis: {
-    userInfo: apiAddr + "user/info",
-    userSetInfo: apiAddr + "user/setinfo",
+    userSetSelfInfo: apiAddr + "user/setSelfInfo",
+    userSetInfo: apiAddr + "user/setInfo",
+    userGetInfo: apiAddr + "user/getInfo",
     userLogin: apiAddr + "user/login",
-    fsHostFiles: apiAddr + "fs/host/files",
-    fsShareFiles: apiAddr + "fs/share/files",
-    fsUserFiles: apiAddr + "fs/user/files",
-    fsAllPaste: apiAddr + "fs/all/paste"
+    groupAddUser: apiAddr + "group/addUser",
+    groupRemoveUser: apiAddr + "group/removeUser",
+    groupGetInfo: apiAddr + "group/getInfo",
+    groupSetInfo: apiAddr + "group/setInfo",
+    fsListDir: apiAddr + "fs/listDir",
+    fsAllPaste: apiAddr + "fs/paste",
+    fsDownloadToken: apiAddr + "fs/downloadToken",
+    
   },
+  downloadAddr: "http://127.0.0.1:8000/api/download",
   errors: {
     2000: {
       cn: "出错了~",

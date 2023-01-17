@@ -12,19 +12,19 @@ import { CaretDownOutline, FileTrayFullOutline, SettingsOutline, DownloadOutline
 
 const router = useRouter();
 const user = useUserStore();
-if (!user.isLoggedIn) {
+if (!user.is_logged_In) {
   router.push("/login");
 }
 const collapsed = ref(false);
-const showedComponent = ref()
-const mainHeightStyle = reactive({value: 'max-height: 100px'});
-const heightStyle = reactive({value: 'height: 100px'});
-const menuValue = ref();
+const showed_component = ref()
+const main_height_style = reactive({value: 'max-height: 100px'});
+const height_style = reactive({value: 'height: 100px'});
+const menu_value = ref();
 const path = ref([]);
 
 const renderIcon = (icon) => () => h(NIcon, null, { default: () => h(icon) })
 
-const menuOptions = [
+const menu_options = [
   {
     label: "查看文件",
     key: "fileManager",
@@ -72,12 +72,12 @@ const renderMenuLabel = (option) => {
 const renderMenuIcon = (menuOption)=>menuOption.icon();
 
 const menuUpdateHandler = (key, option)=>{
-  showedComponent.value=option.component;
+  showed_component.value=option.component;
 }
 
 const resizeMain = ()=>{
-  heightStyle.value = "height: " + (window.innerHeight - document.getElementById("header").clientHeight - 1) + "px";
-  mainHeightStyle.value = "max-height: " + (window.innerHeight - document.getElementById("header").clientHeight)*0.8 + "px";
+  height_style.value = "height: " + (window.innerHeight - document.getElementById("header").clientHeight - 1) + "px";
+  main_height_style.value = "max-height: " + (window.innerHeight - document.getElementById("header").clientHeight)*0.8 + "px";
 }
 
 document.title = "查看文件";
@@ -87,8 +87,13 @@ onMounted(()=>{
     resizeMain();
   })
   resizeMain();
-  menuValue.value = "fileManager";
-  showedComponent.value = h(FileManager, {path: path.value, user:user, type:"user"});
+  menu_value.value = "fileManager";
+  if (user.fs_id){
+    showed_component.value = h(FileManager, {path: path.value, user:user, type:"user"});
+  } else {
+    //show empty
+    showed_component.value = h("div");
+  }
 })
 
 </script>
@@ -98,7 +103,7 @@ onMounted(()=>{
     <n-layout-header bordered id="header">
       <Header />
     </n-layout-header>
-    <n-layout has-sider :style="heightStyle.value">
+    <n-layout has-sider :style="height_style.value">
         <n-layout-sider
           bordered
           collapse-mode="width"
@@ -114,18 +119,18 @@ onMounted(()=>{
             :collapsed="collapsed"
             :collapsed-width="64"
             :collapsed-icon-size="22"
-            :options="menuOptions"
+            :options="menu_options"
             :render-label="renderMenuLabel"
             :expand-icon="expandIcon"
             :render-icon="renderMenuIcon"
-            :value="menuValue"
+            :value="menu_value"
             :on-update:value="menuUpdateHandler"
           />
         </n-layout-sider>
         <n-layout style="margin-left: 10%;margin-right: 10%; margin-top: 3%;">
           <n-card title="" size="medium">
-            <n-scrollbar :style="mainHeightStyle.value">
-              <component :is="showedComponent"></component>
+            <n-scrollbar :style="main_height_style.value">
+              <component :is="showed_component"></component>
             </n-scrollbar>
           </n-card>
         </n-layout>

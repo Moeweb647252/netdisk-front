@@ -12,7 +12,7 @@ const router = useRouter();
 const user = useUserStore();
 const messager = useMessage();
 
-if (user.isLoggedIn) {
+if (user.is_logged_In) {
   router.push("/");
 }
 
@@ -40,6 +40,9 @@ const handleSubmit = async (formRef) => {
             user.setLoginState(true);
             user.setToken(resp.data.data.token);
             user.setName(resp.data.data.name);
+            if (resp.data.data.fs_id){
+              user.setFsId(resp.data.data.fs_id);
+            }
             messager.info("登录成功!");
             setTimeout(() => {
               router.push("/");
